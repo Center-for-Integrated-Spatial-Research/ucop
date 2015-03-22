@@ -1,0 +1,239 @@
+﻿ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=7,IE=9">
+<title>University of California</title>
+<link rel="stylesheet" type="text/css" href="http://serverapi.arcgisonline.com/jsapi/arcgis/3.5/js/dojo/dijit/themes/tundra/tundra.css">
+<link rel="stylesheet" href="http://serverapi.arcgisonline.com/jsapi/arcgis/3.5/js/esri/css/esri.css">
+<link rel="stylesheet" type="text/css" href="css/viewer.css">
+<!-- styles needed by jScrollPane -->
+<link type="text/css" href="css/jquery.jscrollpane.css" rel="stylesheet" media="all" />
+<!-- latest jQuery direct from google's CDN -->
+<script type="text/javascript" src="js/jquery/1.8.2/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery/jscroll/jquery.mousewheel.js"></script>
+<script type="text/javascript" src="js/jquery/jscroll/jquery.jscrollpane.min.js"></script>
+<script type="text/javascript">
+$(function() {
+	$('.scroll-pane').jScrollPane({
+			verticalDragMinHeight: 25,
+			verticalDragMaxHeight: 25,
+			contentWidth: 1
+	});
+	
+	var api = $('.scroll-pane').data('jsp');
+	var throttleTimeout;
+	$(window).bind(
+		'resize',
+		function() {
+			if ($.browser.msie) {
+				// IE fires multiple resize events while you are dragging the browser window which
+				// causes it to crash if you try to update the scrollpane on every one. So we need
+				// to throttle it to fire a maximum of once every 50 milliseconds...
+				if (!throttleTimeout) {
+					throttleTimeout = setTimeout(
+						function() {
+							api.reinitialise();
+							throttleTimeout = null;
+						},
+						50);
+				}
+			} else {
+				api.reinitialise();
+			}
+		}
+	);
+});
+</script>
+
+<script type="text/javascript">
+var djConfig = { 	parseOnLoad: true,
+					gfxRenderer: "svg,silverlight,vml" // svg is first priority 
+				};
+</script>
+<script type="text/javascript" src="http://serverapi.arcgisonline.com/jsapi/arcgis/?v=3.5"></script>
+<script type="text/javascript" src="js/main_2015.js"></script>
+<script type="text/javascript" language="Javascript">
+dojo.addOnLoad(init)
+</script>
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-50773102-1', 'ucsc.edu');
+ga('send', 'pageview');
+</script>
+</head>
+<body class="tundra">
+	<div dojotype="dijit.layout.BorderContainer" design="headline" gutters="false" style="width:100%; height:100%;">
+		<div id="addressDiv">
+			<div id="addressTooltip"></div>
+			<div id="address"></div>
+		</div>
+		<!-- Header Pane (top) -->
+		<div id="topDiv" dojotype="dijit.layout.ContentPane" region="top">
+			<!-- Title Pane -->
+			<div id="titleDiv">
+				<div id="leftTitle"></div>
+				<div id="rightTitle"></div>
+				<div id="gradientTitle"></div>
+				<div id="titleImage"><img src="images/uc_title.png"></div>
+			</div>
+		</div>
+		<!-- Task Pane (left) -->
+		<div id="leftCenterDiv" dojotype="dijit.layout.ContentPane" region="leading" gutters="false">
+			<div  class="scroll-pane">
+				<div id="taskDiv" data-dojo-type="dijit.TitlePane" data-dojo-props="title:'', open:true">
+					<div id="search">
+						<div style="margin-bottom:10px;">
+							<span class="filter">choose a layer:</span>
+							<input name="layer" id="layer"></input>
+						</div>
+						<div style="position:relative;margin-bottom:10px;">
+							<span class="filter">choose a feature:</span>
+							<div style="width:282px;"><input name="district" id="district"></input></div>
+							<div id="addressIcon" onclick="showAddressDialog()"></div>
+						</div>
+					<!-- query buttons -->
+						<div id="buttonDiv">
+							<button data-dojo-type="dijit.form.Button" type="button" id="searchButton">run search</button>
+							<button data-dojo-type="dijit.form.Button" type="button" id="clearButton">clear search</button>
+						</div>					
+					</div>
+				</div>
+				<div id="legendContentDiv" data-dojo-type="dijit.TitlePane" data-dojo-props="title:'', open:true">
+					<div style="position:relative;width:100%;">
+						<div id="queryDefinition" >Filter: <b>-- none --</b></div>
+						<div id="downloadPdf" onclick="showMapPdf()" onmouseover="toolHover(this.id,'over')" onmouseout="toolHover(this.id,'out')"></div>
+						<div id="downloadDoc" onclick="showDataPdf()" onmouseover="toolHover(this.id,'over')" onmouseout="toolHover(this.id,'out')"></div>
+					</div>
+					<div id="infoTabs" data-dojo-type="dijit.layout.TabContainer" data-dojo-props="tabPosition:'top', tabStrip:false" style="width: 100%;" doLayout="false">
+						<div id="legendContent" data-dojo-type="dijit.layout.ContentPane" title="Layers" data-dojo-props="selected:true">
+							<div>
+								<table cellspacing="0" cellpadding="0" style="width:100%; border:none; font-size:11px;">
+									<tr class="legendHeader"><td colspan=2>University of California (UC)</td><td></td></tr>
+									<tr id="University" onClick="toggleLegendVisibility(this.id)" class="legendOut" onMouseOver="hoverLegendItem(this, 'legendOver')" layerVisible="true" onMouseOut="hoverLegendItem(this, 'legendOut')"><td  style="text-align: center;"><img src="images/icons/campus.png"></td><td>Campus</td><td style="text-align: center;"></td></tr>
+									<tr id="Medical Center" onClick="toggleLegendVisibility(this.id)" class="legendOutOff" onMouseOver="hoverLegendItem(this, 'legendOver')" layerVisible="false" onMouseOut="hoverLegendItem(this, 'legendOut')"><td  style="text-align: center;"><img src="images/icons/medcenter_off.png"></td><td>Medical Center</td><td style="text-align: center;"></td></tr>
+									<tr id="Lab" onClick="toggleLegendVisibility(this.id)" class="legendOutOff" onMouseOver="hoverLegendItem(this, 'legendOver')" layerVisible="false" onMouseOut="hoverLegendItem(this, 'legendOut')"><td  style="text-align: center;"><img src="images/icons/labs_off.png"></td><td>National Laboratory</td><td style="text-align: center;"></td></tr>
+									<tr id="Reserves" onClick="toggleLegendVisibility(this.id)" class="legendOutOff" onMouseOver="hoverLegendItem(this, 'legendOver')" layerVisible="false" onMouseOut="hoverLegendItem(this, 'legendOut')"><td  style="text-align: center;"><img src="images/icons/reserves_off.png"></td><td>Natural Reserve</td><td style="text-align: center;"></td></tr>
+									
+									<tr><td><img src="images/esri/blank.gif"></td><td></td><td></td></tr>
+									
+									<tr id="legendHeader"><td class="legendHeader" colspan=2>UC Community Programs</td><td style="text-align: center;"></td></tr>
+									<tr><td></td><td id="dataAvailable"></td><td></td></tr>
+									<tr id="Agriculture, Environment and Natural Resources" layerVisible="false" onClick="toggleLegendVisibility(this.id)" class="legendOutOff" onMouseOver="hoverLegendItem(this, 'legendOver')" onMouseOut="hoverLegendItem(this, 'legendOut')"><td style="width:24px;text-align: center;"><img src="images/icons/agriculture_off.png"></td><td>Agriculture, Environment and Natural Resources</td><td style="text-align: center;"></td></tr>
+									<tr id="Business and Economic Development" layerVisible="false" onClick="toggleLegendVisibility(this.id)" class="legendOutOff" onMouseOver="hoverLegendItem(this, 'legendOver')" onMouseOut="hoverLegendItem(this, 'legendOut')"><td  style="text-align: center;"><img src="images/icons/business_off.png"></td><td>Business and Economic Development</td><td style="text-align: center;"></td></tr>
+									<tr id="Community College Student Services" layerVisible="false" onClick="toggleLegendVisibility(this.id)" class="legendOutOff" onMouseOver="hoverLegendItem(this, 'legendOver')" onMouseOut="hoverLegendItem(this, 'legendOut')"><td  style="text-align: center;"><img src="images/icons/community_college_off.png"></td><td>Community College Student Services</td><td style="text-align: center;"></td></tr>
+									<tr id="Community and Social Services" layerVisible="false" onClick="toggleLegendVisibility(this.id)" class="legendOutOff" onMouseOver="hoverLegendItem(this, 'legendOver')" onMouseOut="hoverLegendItem(this, 'legendOut')"><td  style="text-align: center;"><img src="images/icons/community_social_services_off.png"></td><td>Community and Social Services</td><td style="text-align: center;"></td></tr>
+									<tr id="Cultural Resources and Arts" layerVisible="false" onClick="toggleLegendVisibility(this.id)" class="legendOutOff" onMouseOver="hoverLegendItem(this, 'legendOver')" onMouseOut="hoverLegendItem(this, 'legendOut')"><td  style="text-align: center;"><img src="images/icons/cultural_off.png"></td><td>Cultural Resources and Arts</td><td style="text-align: center;"></td></tr>
+									<tr id="Health Services/Nutrition" layerVisible="false" onClick="toggleLegendVisibility(this.id)" class="legendOutOff" onMouseOver="hoverLegendItem(this, 'legendOver')" onMouseOut="hoverLegendItem(this, 'legendOut')"><td  style="text-align: center;"><img src="images/icons/health_off.png"></td><td>Health Services/Nutrition</td><td style="text-align: center;"></td></tr>
+									<tr id="K-12 Student Services" layerVisible="false" onClick="toggleLegendVisibility(this.id)" class="legendOutOff" onMouseOver="hoverLegendItem(this, 'legendOver')" onMouseOut="hoverLegendItem(this, 'legendOut')"><td  style="text-align: center;"><img src="images/icons/k12_off.png"></td><td>K-12 Student Services</td><td style="text-align: center;"></td></tr>
+									<tr id="Public Policy" layerVisible="false" onClick="toggleLegendVisibility(this.id)" class="legendOutOff" onMouseOver="hoverLegendItem(this, 'legendOver')" onMouseOut="hoverLegendItem(this, 'legendOut')"><td  style="text-align: center;"><img src="images/icons/public_policy_off.png"></td><td>Public Policy</td><td style="text-align: center;"></td></tr>
+									<tr id="Teacher Preparation" layerVisible="false" onClick="toggleLegendVisibility(this.id)" class="legendOutOff" onMouseOver="hoverLegendItem(this, 'legendOver')" onMouseOut="hoverLegendItem(this, 'legendOut')"><td  style="text-align: center;"><img src="images/icons/teacher_preparation_off.png"></td><td>Teacher Preparation</td><td style="text-align: center;"></td></tr>
+									<tr id="Teacher Professional Development" onClick="toggleLegendVisibility(this.id)" class="legendOutOff" onMouseOver="hoverLegendItem(this, 'legendOver')" layerVisible="false" onMouseOut="hoverLegendItem(this, 'legendOut')"><td  style="text-align: center;"><img src="images/icons/teacher_development_off.png"></td><td>Teacher Professional Development</td><td style="text-align: center;"></td></tr>
+									<tr id="University Extension" onClick="toggleLegendVisibility(this.id)" class="legendOutOff" onMouseOver="hoverLegendItem(this, 'legendOver')" layerVisible="false" onMouseOut="hoverLegendItem(this, 'legendOut')"><td  style="text-align: center;"><img src="images/icons/university_extension_off.png"></td><td>University Extension</td><td style="text-align: center;"></td></tr>
+								</table>
+								<div style="text-align:center; color:#8f8884; font-size:10px; margin:7px 0px 0px 0px;">-- click on a layer to toggle its visibility --</div>
+							</div>					
+						</div>
+
+						<div id="systemDetails" data-dojo-type="dijit.layout.ContentPane" title="UC" data-dojo-props="selected:false">
+							<div id="systemCampusDiv" data-dojo-type="dojox.widget.TitleGroup">
+								<div id="campus" data-dojo-type="dijit.TitlePane" title="Campus" open="false">
+									<div style="border: 1px dotted #bbb; background:#F5F5F5; padding: 5px 5px 5px 15px; margin:5px;"><table><tr><td style="width:50px; text-align:center;"><img src="images/no_table.png"></td><td style="font-size:13px; color:#444">No results to display.<br>Run a search to retrieve records.</td></tr></table></div>
+								</div>
+								<div id="system" data-dojo-type="dijit.TitlePane" title="Systemwide" open="true">
+									<div id="systemTableDiv" class="resultsTableDiv">
+										<table id="systemDetailsTable" border="0" cellspacing="0">
+											<tr><td class="resultsTableHeaderText">Undergraduate Applicants (2015)</td><td class="resultsTableAmounts">193,870</td></tr>
+											<tr><td><img src="images/spacer.gif">Freshman Applicants</td><td class="resultsTableAmounts">158,150</td></tr>
+											<tr><td class="resultsTableHeaderText">Students (2014)</td><td class="resultsTableAmounts">252,260</td></tr>
+											<tr><td><img src="images/spacer.gif">Undergraduates</td><td class="resultsTableAmounts">195,080</td></tr>
+											<tr><td><img src="images/spacer.gif">Veterans</td><td class="resultsTableAmounts">1,610</td></tr>
+											<tr><td></td><td></td></tr>
+											<tr><td class="resultsTableHeaderText">Employees in CA</td><td class="resultsTableAmounts">186,960</td></tr>
+											<tr><td><img src="images/spacer.gif">Federally Sponsored</td><td class="resultsTableAmounts">54,900</td></tr>
+											<tr><td><img src="images/spacer.gif">Veterans</td><td class="resultsTableAmounts">1,270</td></tr>
+											<tr><td></td><td></td></tr>
+											<tr><td class="resultsTableHeaderText">Alumni</td><td class="resultsTableAmounts">1,721,820</td></tr>																			
+											<tr><td></td><td></td></tr>											
+											<tr><td class="resultsTableHeaderText">Retirees</td><td class="resultsTableAmounts">64,120</td></tr>										
+											<tr><td></td><td></td></tr>
+											<tr><td class="resultsTableHeaderText">Technology Licensees</td><td class="resultsTableAmounts">1,650</td></tr>
+											<tr><td></td><td></td></tr>											
+											<tr><td class="resultsTableHeaderText">Medical Center Outpatients</td><td class="resultsTableAmounts">3,908,000</td></tr>
+											<tr><td></td><td></td></tr>
+											<tr><td class="resultsTableHeaderText">Payroll in CA</td><td class="resultsTableAmounts">$10,549,263,616</td></tr>
+											<tr><td></td><td></td></tr>
+											<tr><td class="resultsTableHeaderText" colspan=2>State and Federal Funding for Student Aid</td></tr>
+											<tr><td><img src="images/spacer.gif">Cal Grant Recipients</td><td class="resultsTableAmounts">63,750</td></tr>
+											<tr><td><img src="images/spacer.gif">Cal Grants Amount</td><td class="resultsTableAmounts">$770,483,000</td></tr>
+											<tr><td><img src="images/spacer.gif">Pell Recipients</td><td class="resultsTableAmounts">78,590</td></tr>
+											<tr><td><img src="images/spacer.gif">Pell Amount</td><td class="resultsTableAmounts">$356,981,000</td></tr>
+											<tr><td><img src="images/spacer.gif">Federal Loan Recipients</td><td class="resultsTableAmounts">78,280</td></tr>
+											<tr><td><img src="images/spacer.gif">Federal Loan Amount</td><td class="resultsTableAmounts">$459,490,000</td></tr>
+											<tr><td></td><td></td></tr>
+											<tr><td class="resultsTableHeaderText">Federal Funding for UC Research</td><td class="resultsTableAmounts">$3,335,299,000</td></tr>
+											<tr><td><img src="images/spacer.gif">National Inst of Health</td><td class="resultsTableAmounts">$1,960,427,000</td></tr>
+											<tr><td><img src="images/spacer.gif">National Science Found</td><td class="resultsTableAmounts">$50,355,000</td></tr>
+											<tr><td><img src="images/spacer.gif">Dept of Defense</td><td class="resultsTableAmounts">$110,162,000</td></tr>
+											<tr><td><img src="images/spacer.gif">Dept of Energy</td><td class="resultsTableAmounts">$518,416,000</td></tr>
+											<tr><td><img src="images/spacer.gif">USDA</td><td class="resultsTableAmounts">$271,540,000</td></tr>
+											<tr><td><img src="images/spacer.gif">NASA</td><td class="resultsTableAmounts">$198,033,000</td></tr>
+											<tr><td><img src="images/spacer.gif">Other Agencies</td><td class="resultsTableAmounts">$226,366,000</td></tr>
+										</table>
+									</div>
+								</div>	
+							</div>
+						</div>
+
+						<div id="districtDetails" data-dojo-type="dijit.layout.ContentPane" title="District" data-dojo-props="selected:false">
+							<div style="border: 1px dotted #bbb; background:#F5F5F5; padding: 5px 5px 5px 15px; margin:5px;"><table><tr><td style="width:50px; text-align:center;"><img src="images/no_table.png"></td><td style="font-size:13px; color:#444">No results to display.<br>Run a search to retrieve records.</td></tr></table></div>
+						</div>
+					
+					</div>
+					<div style="text-align:center;padding-top:5px;font-size:12px;color:#666;font-style:italic;">Note: data as of Fall 2014</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Map Pane (center) -->
+		<div id="centerDiv" dojotype="dijit.layout.BorderContainer" region="center" gutters="false">
+			<div id="mapDiv" dojotype="dijit.layout.ContentPane" region="center">
+				<div id="mapProgressBar"></div>
+				<div id="zoomToolsDiv">
+					<div  id="zoomNavToolDiv">
+						<div id="zoomInIncrementDiv" onmouseover="toolHover(this.id,'over')" onmouseout="toolHover(this.id,'out')"></div>
+						<div id="zoomOutIncrementDiv" onmouseover="toolHover(this.id,'over')" onmouseout="toolHover(this.id,'out')"></div>
+					</div>
+				</div>
+				<div id="zoomFullToolDiv" onmouseover="toolHover(this.id,'over')" onmouseout="toolHover(this.id,'out')"></div>
+				<div id="zoomInToolDiv" onmouseover="toolHover(this.id,'over')" onmouseout="toolHover(this.id,'out')"></div>
+				<div id="overviewDiv" onmouseover="toolHover(this.id,'over')" onmouseout="toolHover(this.id,'out')"></div>
+					
+				<div id="baseMapOptionDiv">
+					<div id="baseMapSelector" onclick="baseMapSelectorToggle();" onmouseover="toolHover(this.id,'over')" onmouseout="toolHover(this.id,'out')"></div>
+					<div id="baseMapSelectorOptions" style="display:none;">
+						<div id="baseMapToolTip"></div>
+						<div id="Basic" class="baseMapOption" onclick="changeBaseMap(this,grayLayer);" onmouseover="hover(this, 'baseMapOptionHovered');" onmouseout="hover(this, 'baseMapOption');"><div id="basic_img" class="baseMapOptionImg"></div>Simple</div>
+						<div id="Streets" class="baseMapOption" onclick="changeBaseMap(this,streetsLayer);" onmouseover="hover(this, 'baseMapOptionHovered');" onmouseout="hover(this, 'baseMapOption');"><div id="streets_img" class="baseMapOptionImg"></div>Streets</div>
+						<div id="Topographic" class="baseMapOption" onclick="changeBaseMap(this,stamenTerrainLayer);" onmouseover="hover(this, 'baseMapOptionHovered');" onmouseout="hover(this, 'baseMapOption');"><div id="topographic_img" class="baseMapOptionImg"></div>Topographic</div>
+					</div>
+				</div>				
+				<div id="ovContent"></div>	
+			</div>
+		</div>
+		<!-- Footer Pane (bottom) -->
+		<div id="footerDiv" dojotype="dijit.layout.ContentPane" region="bottom">built by the center for integrated spatial research (cisr) @ ucsc</div>
+
+		<!-- Informational Content displayed using dijit.Dialogs -->
+		<div id="browser" data-dojo-type="dijit.Dialog" data-dojo-id="browser" data-dojo-props="title:'Browser version unsupported', draggable:false">
+			<div id="browserContent">
+			<div  style="position:relative;float:left;margin:5px 10px 0px 0px;"><img src="images/error.png"></div>Your browser (Internet Explorer <span id="browserVersion">#</span>) is out of date and will not support the features or functionality of this site. You should install and use the latest version of <a class="reserveLink" href="http://windows.microsoft.com/en-us/internet-explorer/download-ie">Internet Explorer</a> or another supported browser such as <a class="reserveLink" href="http://www.mozilla.org/en-US/firefox/fx/#desktop">Mozilla Firefox</a>, <a class="reserveLink" href="https://www.google.com/intl/en/chrome/browser/">Google Chrome</a>, <a class="reserveLink" href="http://www.apple.com/safari/">or Safari</a>.
+			</div>
+		</div>		
+	</div>
+</body>
+</html>

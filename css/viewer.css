@@ -1,0 +1,920 @@
+html, body {
+height: 100%;
+width: 100%;
+margin: 0;
+padding: 0;
+background: #beb6af;
+font-family:Tahoma;
+color:black;
+}
+
+#mapProgressBar {
+background: url("../images/progressBarAnim.gif") repeat-x scroll center center #CAD2DE;
+border: 1px solid #A2A2A2;
+display: none;
+height: 20px;
+left: 0;
+position: absolute;
+top: 0;
+width: 300px;
+z-index: 101;
+}
+
+#topDiv{
+padding:0px;
+margin: 1px 1px 0px 1px;
+overflow:hidden;
+}
+
+#titleDiv {
+background:#f2ece4 url("../images/uc_logo.png") no-repeat;
+background-position: -10px -20px;
+margin:0px 0px 0px 0px;
+height:50px;
+color:#8F8884;
+font-size:11pt;
+overflow:hidden;
+}
+
+#titleDiv {
+background:#f2ece4;
+background-position: 0px 0px;
+width:100%;
+}
+
+#leftTitle {
+float:left;
+width:50%;
+height:50px;
+background:#7BBED9;
+}
+
+#rightTitle {
+float:left;
+width:50%;
+height:50px;
+background:#F7F391;
+}
+
+#gradientTitle {
+position:absolute;
+width:100%;
+height:50px;
+text-align:left;
+overflow:hidden;
+background: transparent url("../images/bg.png") no-repeat left top;
+}
+
+#titleImage{
+position:absolute;
+left: -30px;
+}
+
+#leftCenterDiv {
+width:340px;
+height:100%;
+background:#fff url("../images/leftCenterDivBG_grad.png") no-repeat left top;
+margin:0px;
+}
+
+.scroll-pane{
+width: 340px;
+height:100%;
+overflow-x: hidden;
+}
+
+#mapDiv{
+margin:1px;
+border:solid 1px #8F8884;
+padding:0px;
+background-color:#f2ece4;
+text-align:left;
+}
+
+#footerDiv {
+background:#f2ece4;
+height:20px;
+margin:0px 1px 1px 1px;
+border:solid 1px #8F8884;
+font-size:10px;
+text-align:right; 
+color:#8F8884; 
+padding:5px 10px 0px 0px;
+}
+
+#addressIcon{
+position:absolute;
+width:24px;
+height:24px;
+top:15px;
+right:0px;
+background:url('../images/address.png') no-repeat 2px center;
+cursor:pointer;
+cursor:hand;
+}
+
+#addressDiv{
+display:none;
+position:absolute;
+width:300px;
+height:30px;
+top:145px;
+left:340px;
+z-index:100;
+}
+#addressTooltip{
+position:absolute;
+width:10px;
+height:30px;
+top:0px;
+left:0px;
+background:url("../images/tooltip.png") no-repeat scroll 2px 10px;
+z-index:2;
+}
+
+#address{
+position:absolute;
+width:275px;
+top:0px;
+left:9px;
+}
+
+.simpleGeocoder .esriGeocoderContainer {
+color:#666;
+font-size:11px;
+width: 275px;
+box-shadow: 2px 2px 6px #6a6a6a;
+-moz-box-shadow: 2px 2px 6px #6a6a6a;
+-webkit-box-shadow: 2px 2px 6px #6a6a6a;
+-o-box-shadow: 2px 2px 6px #6a6a6a;
+}
+
+.simpleGeocoder .esriGeocoder{
+border: 1px solid #666;
+}
+
+.simpleGeocoder .esriGeocoder input{
+width:200px;
+}
+
+.simpleGeocoder .esriGeocoderResults {
+border-width: 0 1px 1px;
+}
+
+.simpleGeocoder .esriGeocoderResult:hover, .simpleGeocoder .esriGeocoderResultEven:focus, .simpleGeocoder .esriGeocoderResultOdd:focus  {
+background-color:#F5F187;
+}
+
+#baseMapOptionDiv {
+display:none;
+position: absolute;
+width:110px;
+top: 10px;
+right: 102px;
+z-index: 102;
+}
+
+#baseMapSelector{
+position:relative;
+top:0px;
+left:0px;
+width:30px;
+height:30px;
+cursor:pointer;
+cursor:hand;
+background:#fff url("../images/basemapIcon_off-out.png") no-repeat center center;
+border: 1px solid #666;
+border-radius: 4px;
+-moz-border-radius: 4px;
+-webkit-border-radius: 4px;
+}
+
+#baseMapToolTip{
+position:absolute;
+width:12px;
+height:10px;
+top:-8px;
+right:9px;
+background:url("../images/tooltip_below.png") no-repeat top center;
+}
+
+#baseMapSelectorOptions{
+margin-top:10px;
+position:relative;
+right: 90px;
+width:120px;
+background:#fff;
+color:#666;
+padding:7px 0px 7px 0px;
+border:1px solid #666;
+font-family: Verdana, Helvetica;
+font-size:11px;
+border-radius: 4px;
+-moz-border-radius: 4px;
+-webkit-border-radius: 4px;
+-o-border-radius: 4px;
+ box-shadow: 2px 2px 6px #6a6a6a;
+ -moz-box-shadow: 2px 2px 6px #6a6a6a;
+-webkit-box-shadow: 2px 2px 6px #6a6a6a;
+-o-box-shadow: 2px 2px 6px #6a6a6a;
+}
+
+.baseMapOption {
+height:22px;
+background-color:#fff;
+padding:8px 5px 0px 8px;
+cursor:pointer;
+cursor:hand;
+}
+
+.baseMapOptionHovered {
+height:22px;
+background-color:#F5F187;
+padding:8px 5px 0px 8px;
+cursor:pointer;
+cursor:hand;
+}
+
+.baseMapOptionImg {
+position: relative;
+left:0px;
+top:-5px;
+width:24px;
+height:24px;
+border:1px solid #ccc;
+border-radius: 4px;
+-moz-border-radius: 4px;
+-webkit-border-radius: 4px;
+-o-border-radius: 4px;
+float:left;
+margin:0px 8px 0px 0px;
+}
+
+#basic_img{
+background:url("../images/basic.png") no-repeat center center;
+}
+
+#streets_img{
+background:url("../images/streets.png") no-repeat center center;
+}
+
+#topographic_img{
+background:url("../images/topographic.png") no-repeat center center;
+}
+
+#zoomToolsDiv {
+position:absolute;
+width:30px;
+height:30px;
+right: 20px;
+top: 10px;
+z-index: 103;
+cursor:hand;
+}
+
+#zoomNavToolDiv, #overviewDiv, #zoomInToolDiv, #zoomFullToolDiv {
+display:none;
+position:relative;
+width:30px;
+height:30px;
+cursor:pointer;
+cursor:hand;
+background:#fff;
+border: 1px solid #666;
+border-radius: 4px;
+-moz-border-radius: 4px;
+-webkit-border-radius: 4px;
+-o-border-radius: 4px;
+}
+
+#zoomInIncrementDiv, #zoomOutIncrementDiv {
+width:30px;
+height:15px;
+}
+
+#zoomInIncrementDiv {
+border-bottom: 1px solid #666;
+background:url("../images/zoomInIcon-out.png") no-repeat center center;
+}
+
+#zoomOutIncrementDiv {
+background:url("../images/zoomOutIcon-out.png") no-repeat center center;
+}
+
+#zoomInToolDiv {
+position:absolute;
+right: 100px;
+top: 10px;
+z-index: 103;
+background: #fff url("../images/zoomInToolIcon-out.png") no-repeat center center;
+}
+
+#zoomFullToolDiv {
+position:absolute;
+right: 60px;
+top: 10px;
+z-index: 103;
+background:#fff url("../images/zoomFullToolIcon-out.png") no-repeat center center;
+}
+
+#overviewDiv {
+position:absolute;
+right: 140px;
+top: 10px;
+z-index: 103;
+background: #fff url("../images/overviewIcon_off-out.png") no-repeat center center;
+}
+
+#overviewMap-map, #overviewMap-map_root, #overviewMap-map_layers {
+border-radius: 4px 4px 4px 4px;
+}
+
+.esriOverviewMap.ovwTR {
+top: 55px;
+right: 18px;
+}
+
+.esriOverviewMap.ovwTR .ovwContainer {
+border-radius: 4px 4px 4px 4px;
+border-left: 1px solid #666;
+border-top:  1px solid #666;
+border-right:  1px solid #666;
+border-bottom:  1px solid #666;
+box-shadow: 2px 2px 6px #6a6a6a;
+-moz-box-shadow: 2px 2px 6px #6a6a6a;
+-webkit-box-shadow: 2px 2px 6px #6a6a6a;
+-o-box-shadow: 2px 2px 6px #6a6a6a;
+padding:0px;
+}
+
+.esriOverviewMap .ovwContainer {
+border-left: none;
+border-top: none;
+border-right: none;
+border-bottom: none;
+background: none;
+}
+
+.esriOverviewMap.ovwTR .ovwShow, .esriOverviewMap.ovwBL .ovwHide, .esriOverviewMap.ovwBL .ovwShow, .esriOverviewMap.ovwTR .ovwHide{
+background:none;
+}
+
+#bm_topo {
+/*background: #444444 url("../images/topo.png") no-repeat center center;*/
+}
+
+.tundra .dijitSliderRemainingBarH {
+background: #444444;
+outline: none;
+}
+
+.tundra .dijitSliderRightBumper {
+background: #444444;
+}
+
+.dijitSliderBumperH {
+    border-width: 0px 0 !important;
+    height: 4px;
+    width: 8px;
+}
+
+.tundra .dijitSliderBar {
+border-style: solid;
+outline: none;
+}
+
+.dijitSliderBarH {
+border-width: 0px 0 !important;
+height: 4px;
+}
+
+.tundra .dijitSliderProgressBarH {
+    background: #444444 !important;
+}
+
+.tundra .dijitSliderFocused .dijitSliderProgressBarH, .tundra .dijitSliderFocused .dijitSliderLeftBumper {
+    background: #444444 !important;
+}
+
+.tundra .dijitSliderIncrementIconH {
+background-position: 0px;
+}
+
+.tundra .dijitSliderDeccrementIconH {
+background-position: 0px;
+}
+
+.tundra .dijitSliderLeftBumper {
+background: #444444 ;
+}
+
+.tundra .dijitSliderIncrementIconH, .tundra .dijitSliderIncrementIconV {
+background-image: url("../images/ZoomInIconOLD.png");
+background-repeat: no-repeat;
+cursor: pointer;
+height: 20px;
+width: 20px;
+}
+
+.tundra .dijitSliderDecrementIconH, .tundra .dijitSliderDecrementIconV {
+background-image: url("../images/ZoomOutIconOLD.png");
+background-repeat: no-repeat;
+cursor: pointer;
+height: 20px;
+width: 20px;
+}
+
+.tundra .dijitSliderImageHandleH {
+background: url("../images/ZoomSliderOLD.png") no-repeat scroll center top transparent !important;
+border: 0 none;
+height: 16px;
+width: 16px;
+}
+.dijitSliderImageHandleH {
+left: 50%;
+top: -6px;
+vertical-align: top;
+}
+
+#leftDiv {
+position: fixed;
+display:none;
+left: 20px;
+top: 70px;
+z-index: 101;
+}
+
+#rightDiv {
+position:fixed;
+display:none;
+right:20px;
+top:105px;
+z-Index:101;
+}
+
+#ovContentDiv .dijitTitlePaneContentInner {
+padding:0px;
+}
+
+#taskDiv, #ovContentDiv, #legendContentDiv {
+position:relative;
+background-color: #f2ece4;
+font-family: 'Myriad Pro', Tahoma, 'Trebuchet MS', sans-serif;
+font-size: 13px;
+background: #fff;
+}
+
+#ovContentDiv{
+width:255px;
+width:"270px";
+background: none;
+box-shadow: 2px 2px 6px #6a6a6a;
+-moz-box-shadow: 2px 2px 6px #6a6a6a;
+-webkit-box-shadow: 2px 2px 6px #6a6a6a;
+-o-box-shadow: 2px 2px 6px #6a6a6a;
+border-radius: 4px;
+-moz-border-radius: 4px;
+-webkit-border-radius: 4px;
+-o-border-radius: 4px;
+}
+
+#taskDiv, #legendContentDiv {
+width: 330px;
+visibility:hidden;
+background:none;
+}
+
+#taskDiv {
+margin:0px 0px 0px 0px;
+}
+
+#legendContentDiv {
+margin:0px 0px 0px 0px;
+}
+
+#infoDiv{
+top: 10px;
+}
+
+#infoTabs{
+font-size: 11px;
+}
+
+#infoTabsHeader{
+text-align:center;
+font-weight: bold;
+}
+
+#taskDiv .dijitTitlePaneContentOuter, #legendContentDiv .dijitTitlePaneContentOuter{
+border: none;
+background:none;
+}
+
+#taskDiv .dijitTitlePaneTitle, #legendContentDiv  .dijitTitlePaneTitle{
+background: none;
+color:#444;
+border: none;
+font-size: 16px;
+}
+
+#taskDiv .dijitTitlePaneTitle{
+background: transparent url("../images/search.png") no-repeat scroll 10px 5px;
+}
+
+#legendContentDiv .dijitTitlePaneTitle{
+background: transparent url("../images/results.png") no-repeat scroll 10px 5px;
+}
+
+#infoTabsContent  .dijitTitlePaneTitle {
+font-variant:normal;
+background: none repeat scroll 0 0 #8F8884;
+color:#fff;
+}
+
+#campus .dijitTitlePaneTitle, #system .dijitTitlePaneTitle,  #districtTable  .dijitTitlePaneTitle {
+background: #666;
+border: 1px solid #ccc;
+margin-top: 1px;
+font-size: 13px;
+line-height:90%;
+color:#fff;
+}
+
+#taskDiv  .dijitTitlePaneTitle .dijitArrowNode, #legendContentDiv  .dijitTitlePaneTitle .dijitArrowNode {
+background-image: none;
+}
+
+#campus  .dijitTitlePaneTitle .dijitArrowNode, #system  .dijitTitlePaneTitle .dijitArrowNode,  #districtTable  .dijitTitlePaneTitle .dijitArrowNode  {
+background-image: url("../images/esri/spriteArrows.png")
+}
+
+#queryDefinition {
+width:267px;
+margin:0px 0px 10px 0px;
+padding:5px 5px 5px 10px;
+border:1px solid #ccc;
+background:#eee;
+border-radius: 4px;
+-moz-border-radius: 4px;
+-webkit-border-radius: 4px;
+-o-border-radius: 4px;
+}
+
+#downloadPdf, #downloadDoc {
+position:absolute;
+top:2px;
+width:20px;
+height:24px;
+cursor:pointer;
+cursor:hand;
+}
+#downloadPdf {
+right:22px;
+background: url("../images/exportPDF-out.png") no-repeat center center;
+display:none;
+}
+
+#downloadDoc {
+right:0px;
+background: url("../images/dataDocumentation-out.png") no-repeat center center;
+}
+
+#systemDetailsTable {
+width:100%;
+border-collapse:collapse;
+}
+
+#popupTableDiv{
+overflow:hidden;
+}
+
+.legislator{
+position:relative;
+height:130px;
+margin-bottom:10px;
+color:#444;
+}
+
+.legislatorImage{
+position:absolute;
+top:12px;
+left:15px;
+}
+
+.legislatorImage img{
+border: 1px solid #bbb;
+border-radius: 4px;
+-moz-border-radius: 4px;
+-webkit-border-radius: 4px;
+-o-border-radius: 4px;
+box-shadow: 2px 2px 6px #6a6a6a;
+-moz-box-shadow: 2px 2px 6px #6a6a6a;
+-webkit-box-shadow: 2px 2px 6px #6a6a6a;
+-o-box-shadow: 2px 2px 6px #6a6a6a;
+}
+
+.legislatorInfoDiv{
+position:absolute;
+width:100%;
+height:30%;
+top:50%;
+left:50%;
+text-align:center;
+margin: -15% 0 0 -50%;
+}
+
+.districtImage{
+position:absolute;
+width:60%;
+height:100%;
+top:0px;
+right:0px;
+}
+
+.resultsTableTitleDiv, .legislatorTitleDiv{
+font-family: Trebuchet, MS, Tahoma;
+font-variant: small-caps;
+font-size: 11px;
+background: #D5D5D5;
+border: 1px solid #BBBBBB;
+color: #555555;
+padding: 3px;
+text-align: center;
+}
+
+.legislatorTitleDiv{
+border: 1px solid #666;
+color:#fff;
+background:#666;
+font-size: 13px;
+text-align:left;
+line-height:12px;
+padding:3px 3px 3px 6px;
+vertical-align:middle;
+margin:5px 0px 0px 0px;
+}
+
+.resultsTableDiv{
+border: 1px dotted #bbb;
+background:#F5F5F5;
+color:#444;
+padding:5px;
+}
+
+.resultsTable {
+width:100%;
+border-collapse:collapse;
+}
+
+.resultsTableHeader {
+background:#C8C8C8;
+}
+
+.resultsTableHeaderText{
+padding-left: 10px;
+width:65%;
+}
+
+.resultsTableAmounts{
+text-align:right;
+padding-right: 5px;
+}
+
+.tundra .dijitTitlePaneTitle {
+font-family: Trebuchet MS, Tahoma;
+font-variant:small-caps;
+font-weight:bold;
+color:#fff;
+background: none;
+}
+
+#ovContent {
+position:absolute;
+width: 200px;
+height: 150px;
+overflow: hidden;
+}
+
+#buttonDiv {
+margin: 10px 0px 0px 0px;
+text-align: center;
+}
+
+#search{
+margin-bottom:5px;
+}
+
+.searchDropDown {
+width:100%;
+margin-top:0px;
+font-family: 'Myriad Pro', Tahoma, 'Trebuchet MS', sans-serif;
+font-size: 12px;
+}
+
+.filter {
+font-size:9pt;
+color:#fff;
+margin-bottom:2px;
+}
+
+/*filterSelect Styles*/
+.tundra .dijitReset .dijitMenuItem {
+font-family: 'Myriad Pro', Tahoma, 'Trebuchet MS', sans-serif;
+font-size: 12px;
+padding:2px 5px;
+}
+
+.tundra .dijitReset  .dijitMenuItemHover, .tundra .dijitMenuItemSelected{
+background-color: #F5F187;
+color:#444;
+}
+
+.tundra .dijitTooltipContainer {
+border-radius: 4px;
+-moz-border-radius: 4px;
+-webkit-border-radius: 4px;
+-o-border-radius: 4px;
+border:1px solid #666;
+color:#666;
+font-size:12px;
+padding:5px;
+}
+
+.tundra .dijitTooltipBelow .dijitTooltipConnector {
+background:url('../images/tooltip_below.png') no-repeat 6px 6px;
+}
+
+.tundra .dijitTooltipRight .dijitTooltipConnector {
+background:url('../images/tooltip.png') no-repeat 7px 2px;
+}
+
+.tundra .dijitTooltipLeft .dijitTooltipConnector {
+background:url('../images/tooltip_left.png') no-repeat 0px 2px;
+}
+
+.tundra .dijitTooltipAbove .dijitTooltipConnector {
+background:url('../images/tooltip_above.png') no-repeat 7px 2px;
+}
+
+.cc_definitionContent {
+width:300px;
+}
+
+#legendDiv {
+display:block;
+}
+
+#legendContent {
+font-family: 'Myriad Pro', Tahoma, 'Trebuchet MS', sans-serif;
+}
+
+#legendHeader, .legendHeader  {
+text-align:center;
+color:#000;
+font-weight:bold;
+font-size: 13px;
+}
+
+#dataAvailable {
+text-align:center;
+font-size: 11px;
+}
+
+.legendOver {
+background:#dbd5ce;
+color: #000;
+}
+
+.legendOut {
+background: #fff;
+color: #000;
+}
+
+.legendOff {
+background: #fff;
+color: #a6a19c;
+}
+
+.legendOverOff {
+background: #dbd5ce;
+color: #a6a19c;
+}
+
+.legendOutOff {
+background: #fff;
+color: #a6a19c;
+}
+
+a.reserveLink, a.reserveLink:visited {
+color:#6EAAC1;
+text-decoration:none;
+font-weight: bold;
+}
+
+a.reserveLink:hover  {
+color:#F5F187;
+text-decoration:underline;
+font-weight: bold;
+}
+
+#popupTable{
+width:100%;
+}
+
+.maptooltip {
+border-radius: 4px 4px 4px 4px;
+padding: 5px;
+position: absolute;
+width: 100px;
+z-index: 9999;
+text-align:center;
+font:normal normal normal 8pt Arial;
+color: white;
+background-color: #000000;
+border: 1px solid #ffffff;
+opacity:0.8;
+filter:alpha(opacity=80); /* For IE8 and earlier */
+ box-shadow: 2px 2px 6px #6a6a6a;
+ -moz-box-shadow: 2px 2px 6px #6a6a6a;
+-webkit-box-shadow: 2px 2px 6px #6a6a6a;
+-o-box-shadow: 2px 2px 6px #6a6a6a;
+}
+
+#gridContainer{
+position:absolute;
+left:400px;
+z-index:200;
+display:none;
+border: 1px solid #444;
+width:550px;
+height:550px;
+background:url(../images/opacitywhite.png);
+padding:0px 10px 10px 10px;
+}
+
+#gridContent {
+position:relative;
+width:100%;
+height:515px;
+border: 1px solid #444;
+clear:both;
+}
+
+/*ESRI, Dojo overrides*/
+.esriPopup .contentPane {
+font-family: 'Myriad Pro', Tahoma, 'Trebuchet MS', sans-serif;
+font-size: 11px;
+padding: 10px;
+}
+
+.esriPopup .title {
+width:88%;
+padding:4px 2px;
+line-height: 105%;
+font-family: Trebuchet, MS, Tahoma;
+font-variant: small-caps;
+font-size: 14px;
+}
+
+.esriPopup .titleButton.maximize{
+display:none;
+}
+.esriPopup .titleButton{
+top:4px;
+right:4px;
+}
+
+.tundra .dijitDialog {
+border: 1px solid #ccc;
+border-radius: 4px;
+-moz-border-radius: 4px;
+-webkit-border-radius: 4px;
+-o-border-radius: 4px;
+box-shadow: 2px 2px 6px #6a6a6a;
+-moz-box-shadow: 2px 2px 6px #6a6a6a;
+-webkit-box-shadow: 2px 2px 6px #6a6a6a;
+-o-box-shadow: 2px 2px 6px #6a6a6a;
+}
+
+.tundra .dijitDialogTitleBar {
+background: none repeat scroll 0 0 #444444;
+color:#fff;
+font-size:14px;
+font-family: Trebuchet MS, Tahoma;
+font-variant:small-caps;
+line-height:105%;
+padding:4px 2px;
+}
+
+.tundra .dijitDialogCloseIcon{
+background:url("../images/esri/popup.png") no-repeat scroll 0 0 transparent;
+background-position: 0 -171px;
+height: 17px;
+right: 3px;
+width: 12px;
+}
+
+#browserContent{
+width:300px;
+font-size: 13px;
+}
