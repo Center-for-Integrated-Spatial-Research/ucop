@@ -130,7 +130,7 @@ function init(){
 	esri.config.defaults.geometryService = new esri.tasks.GeometryService("http://tasks.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer");
 	esri.config.defaults.io.proxyUrl = "/proxy/proxy.ashx"
 	//esri.config.defaults.io.corsEnabledServers.push("tasks.arcgisonline.com");
-	//esri.config.defaults.io.corsEnabledServers.push("arcgis.cisr.ucsc.edu");
+	esri.config.defaults.io.corsEnabledServers.push("arcgis.cisr.ucsc.edu");
 	
 	dojo.style("mapProgressBar", { 
 			display:"block",
@@ -629,6 +629,7 @@ function init(){
 	});
 	
 	dojo.connect(map, "onExtentChange", function(extent, delta, outLevelChange, outLod){
+			console.log(queryLayers)
 			if (!queryLayers) { 
 				checkLegendVisibility();
 			}
@@ -780,7 +781,7 @@ function init(){
 	dijit.byId("searchButton").set('disabled', true);
 	dijit.byId("clearButton").set('disabled', true);
 	
-	new dijit.Tooltip({ id:"ag_tooltip", connectId: "Agriculture, Environment And Natural Resources", label:"<div class=\"cc_definitionContent\">Partnership programs providing research-based curriculum and staff training to community and youth-serving agencies to support quality afterschool environments for children ages 5 to 19. This includes programs such as 4-H Youth Clubs, After School Programs and UC Cooperative Extension. Advisors bring research innovations and practical solutions from UC to address the problems facing Californians in their communities.</div>", showDelay:10, position:['after'] });
+	new dijit.Tooltip({ id:"ag_tooltip", connectId: "Agriculture, Environment and Natural Resources", label:"<div class=\"cc_definitionContent\">Partnership programs providing research-based curriculum and staff training to community and youth-serving agencies to support quality afterschool environments for children ages 5 to 19. This includes programs such as 4-H Youth Clubs, After School Programs and UC Cooperative Extension. Advisors bring research innovations and practical solutions from UC to address the problems facing Californians in their communities.</div>", showDelay:10, position:['after'] });
 	new dijit.Tooltip({ id:"bs_tooltip", connectId: "Business and Economic Development", label:"<div class=\"cc_definitionContent\">Internship programs, with UC credit, offered in partnership with local companies, allowing students to apply classroom learning to solve complex business challenges for real world companies. These programs also focus on bringing together local companies and motivated individuals, placing students in high-tech and green-tech startups, thereby promoting civic engagement and community economic development.</div>", showDelay:10, position:['after'] });
 	new dijit.Tooltip({ id:"cc_tooltip", connectId: "Community College Student Services", label:"<div class=\"cc_definitionContent\">Programs supporting UC’s commitment to California Community College students, focusing on increasing the number of student prepared for transfer to UC and other 4-year institutions. These include MESA and PUENTO programs for community college students.</div>", showDelay:10, position:['after'] });
 	new dijit.Tooltip({ id:"cs_tooltip", connectId: "Community and Social Services", label:"<div class=\"cc_definitionContent\">Volunteer and partnership programs providing community and social services to neighborhoods near UC campuses. This includes  programs such as legal aid, Domestic Violence Clinics, Fair housing advocacy and volunteering at the offices of  legislative and congressional members.</div>", showDelay:10, position:['after'] });
@@ -799,7 +800,7 @@ function init(){
 }
 
 function queryByLayer(value) {
-	queryLayers = true;
+	//queryLayers = true;
 	dojo.style("mapProgressBar", { "display":"block" });
 	var layer = dijit.byId('layer').get('value');
 	var query = new esri.tasks.Query();
@@ -813,7 +814,7 @@ function queryByLayer(value) {
 	if (layer == "campus") {
 		dojo.style("downloadPdf", {"display":"none"});
 		dojo.style("queryDefinition", {"width":"267px"});
-		var fields = {"Community Programs": "Managing_Campus", "Campus": "Name", "Reserves": "Managing_Campus", "Medical Center": "Campus_Name", "Lab": "Campus_Name"};
+		var fields = {"Community Programs": "Campus", "Campus": "Name", "Reserves": "Managing_Campus", "Medical Center": "Campus_Name", "Lab": "Campus_Name"};
 		var geometry = ''
 		queryMultipleLayers(layer, fields, [value,value], geometry);
 	} else if (layer == "assembly"){	
@@ -884,8 +885,8 @@ function queryMultipleLayers(layer, fields, values, geometry) {
 		processReservesResults(results[2][1])
 		processMedCenterResults(results[3][1])
 		processLabResults(results[4][1])
-		if (geometry !='') { zoomToFeature(geometry) };
 		queryLayers = false;
+		if (geometry !='') { zoomToFeature(geometry) };
 		dijit.byId("searchButton").set('disabled', false);
 		dijit.byId("clearButton").set('disabled', false);
 	});
@@ -1150,23 +1151,6 @@ function filterSelectData(features, nameField) {
 	data.splice(0, 0, obj);
 	
 	return { label:"name", identifier:"id", items: data };
-}
-
-function populateFilterSelect(data, domNode) {
-	var store = new dojo.data.ItemFileReadStore({ data: data });
-	new dijit.form.FilteringSelect({
-		store: store,
-		autoComplete: true,
-		required: false,
-		searchAttr: "name",
-		value: filterSelectAll,
-		maxHeight: 100,
-		style: "width: 100%;",
-		onChange: function(name) {
-				var item = this.item;
-				queryByLayer(item.name)
-		}
-	}, domNode);
 }
 
 function layerOnMouseOver(evt, field, features) {
@@ -1621,6 +1605,7 @@ function resetMapLayersData(){
 	resetLegendVisibility();
 	checkLegendVisibility();
 	campusLargeFeatureLayer.hide(); // hack
+	campusSmallFeatureLayer.hide(); // hack
 	assemblyFeatureLayer.hide();
 	senateFeatureLayer.hide();
 	congressFeatureLayer.hide();
@@ -1818,28 +1803,43 @@ function checkLegendVisibility() {
 
 function redrawLayers() {
 	var level = map.getLevel();
+	console.log(level);
+	
+	campusSmallFeatureLayer.hide();
+	medCenterSmallFeatureLayer.hide();
+	labSmallFeatureLayer.hide();
+	campusLargeFeatureLayer.hide();
+	medCenterLargeFeatureLayer.hide();
+	labLargeFeatureLayer.hide();
+	
+	campusSmallFeatureLayer.setDefinitionExpression(campusLayerDefinition);
+	medCenterSmallFeatureLayer.setDefinitionExpression(medCenterLayerDefinition);
+	labSmallFeatureLayer.setDefinitionExpression(labLayerDefinition);
+	campusLargeFeatureLayer.setDefinitionExpression(campusLayerDefinition);
+	medCenterLargeFeatureLayer.setDefinitionExpression(medCenterLayerDefinition);
+	labLargeFeatureLayer.setDefinitionExpression(labLayerDefinition);
+	
 	if (level <= 10) {
-		
-		campusSmallFeatureLayer.hide();
+		/* campusSmallFeatureLayer.hide();
 		medCenterSmallFeatureLayer.hide();
-		labSmallFeatureLayer.hide();
+		labSmallFeatureLayer.hide(); */
 		dojo.forEach(campusLayerVisibility, function (layer) {
 			switch(layer) {
 				case "University":
-				campusSmallFeatureLayer.setDefinitionExpression(campusLayerDefinition);
-				campusSmallFeatureLayer.redraw();
+				//campusSmallFeatureLayer.setDefinitionExpression(campusLayerDefinition);
+				//campusSmallFeatureLayer.refresh();
 				campusSmallFeatureLayer.show();
 				break;
 				
 				case "Medical Center":
-				medCenterSmallFeatureLayer.setDefinitionExpression(medCenterLayerDefinition);
-				medCenterSmallFeatureLayer.redraw();
+				//medCenterSmallFeatureLayer.setDefinitionExpression(medCenterLayerDefinition);
+				//medCenterSmallFeatureLayer.refresh();
 				medCenterSmallFeatureLayer.show();
 				break;
 				
 				case "Lab":
-				labSmallFeatureLayer.setDefinitionExpression(labLayerDefinition);
-				labSmallFeatureLayer.redraw();				
+				//labSmallFeatureLayer.setDefinitionExpression(labLayerDefinition);
+				//labSmallFeatureLayer.refresh();				
 				labSmallFeatureLayer.show();
 				break;
 			}
@@ -1869,26 +1869,27 @@ function redrawLayers() {
 			communityProgramFeatureLayer72k.show();			
 		}
 		
-		campusLargeFeatureLayer.hide();
+		/* campusLargeFeatureLayer.hide();
 		medCenterLargeFeatureLayer.hide();
-		labLargeFeatureLayer.hide();
+		labLargeFeatureLayer.hide(); */
 		dojo.forEach(campusLayerVisibility, function (layer) {
 			switch(layer) {
 				case "University":
-				campusLargeFeatureLayer.setDefinitionExpression(campusLayerDefinition);
-				campusLargeFeatureLayer.redraw();
+				console.log('campusLargeFeatureLayer');
+				//campusLargeFeatureLayer.setDefinitionExpression(campusLayerDefinition);
+				//campusLargeFeatureLayer.refresh();
 				campusLargeFeatureLayer.show();
 				break;
 				
 				case "Medical Center":
-				medCenterLargeFeatureLayer.setDefinitionExpression(medCenterLayerDefinition);
-				medCenterLargeFeatureLayer.redraw();
+				//medCenterLargeFeatureLayer.setDefinitionExpression(medCenterLayerDefinition);
+				//medCenterLargeFeatureLayer.refresh();
 				medCenterLargeFeatureLayer.show();
 				break;
 				
 				case "Lab":
-				labLargeFeatureLayer.setDefinitionExpression(labLayerDefinition);
-				labLargeFeatureLayer.redraw();				
+				//labLargeFeatureLayer.setDefinitionExpression(labLayerDefinition);
+				//labLargeFeatureLayer.refresh();				
 				labLargeFeatureLayer.show();
 				break;
 			}
